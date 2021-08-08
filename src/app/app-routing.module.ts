@@ -1,13 +1,15 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { AppComponent } from './app.component';
+import { InfoComponent } from './pages/info-page/info.component';
 import { MyStopsComponent } from './pages/my_stops_page/my-stops.component';
 import { SearchComponent } from './pages/search_page/search.component';
 
 const routes: Routes = [
   {
     path: '',
-    component: SearchComponent,
+    pathMatch: 'full',
+    redirectTo: '/search',
   },
 
   {
@@ -17,6 +19,13 @@ const routes: Routes = [
   {
     path: 'my-stops',
     component: MyStopsComponent,
+  },
+  {
+    path: 'info/:id',
+    component: InfoComponent,
+    data: {
+      id: ':id',
+    },
   },
 ];
 

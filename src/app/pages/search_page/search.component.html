@@ -1,8 +1,13 @@
 <div class="container mt-5">
-  <form class="form-inline">
+  <form class="form-inline" (ngSubmit)="searchStops()" [formGroup]="form">
     <div class="row">
       <div class="col-md-4">
-        <input type="text" class="form-control" placeholder="Search Stop" />
+        <input
+          type="text"
+          class="form-control"
+          formControlName="search"
+          placeholder="Search Stop"
+        />
       </div>
       <div class="col-md-4">
         <button type="submit" class="btn btn-primary mb-2">Search</button>
@@ -11,4 +16,10 @@
   </form>
 
   <hr />
+
+  <div *ngIf="results.length !== 0">
+    <div *ngFor="let stop of results" class="mt-3">
+      <app-stop class="mt-3" [stop]="stop"></app-stop>
+    </div>
+  </div>
 </div>
