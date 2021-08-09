@@ -36,12 +36,61 @@
         </tr>
       </tbody>
     </table>
-    <button type="button" class="btn btn-primary" (click)="showDepartures()">
-      Show Departures
-    </button>
+    <div class="mt-5">
+      <form [formGroup]="departureGroup">
+        <div class="form-group">
+          <div class="row">
+            <div class="col-md-3">
+              <input
+                type="datetime-local"
+                class="form-control"
+                formControlName="when"
+              />
+            </div>
+            <div class="col-md-2">
+              <input
+                type="number"
+                class="form-control"
+                formControlName="duration"
+              />
+            </div>
+            <div class="col-md-2">
+              <button
+                type="button"
+                class="btn btn-primary"
+                (click)="showDepartures()"
+              >
+                Show Departures
+              </button>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+
     <hr />
     <div class="shadow rounded mt-5" *ngFor="let dep of departures">
-      {{ dep.direction }}
+      <div class="card">
+        <div class="card-header">
+          <strong>Direction:</strong>{{ " " + dep.direction }} |
+          <strong>Travel Nr.</strong>{{ dep.line.fahrtNr }}
+        </div>
+        <div class="card-body">
+          <ul>
+            <li>Planned: {{ " " + dep.plannedWhen | date: "medium" }}</li>
+            <li *ngIf="dep.delay >= 0">
+              Delay: {{ " " + dep.delay / 60 + " " }} min
+            </li>
+            <li *ngIf="dep.delay < 0">
+              Early: {{ " " + -dep.delay / 60 + " " }} min
+            </li>
+            <li *ngIf="dep.platform !== null">
+              Platform: {{ " " + dep.platform }}
+            </li>
+            <li>Transport: {{ " " + dep.line.product | titlecase }}</li>
+          </ul>
+        </div>
+      </div>
     </div>
   </div>
 </ng-container>

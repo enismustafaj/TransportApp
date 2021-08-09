@@ -12,12 +12,7 @@ export class BookmarkService {
   getBookmark(id: string) {
     console.log(id);
     return this.httpClient.get<Stop>(
-      `https://real-time-73b5d-default-rtdb.europe-west1.firebasedatabase.app/stops.json`,
-      {
-        params: {
-          id: id,
-        },
-      }
+      `https://real-time-73b5d-default-rtdb.europe-west1.firebasedatabase.app/stops/${id}.json`
     );
   }
   getBookmarks(): Observable<{ [k: string]: Stop }> {
@@ -27,23 +22,15 @@ export class BookmarkService {
   }
 
   addBookmark(id: string, stop: Stop): Observable<boolean> {
-    const data = {
-      [id]: stop,
-    };
     return this.httpClient.put<boolean>(
-      `https://real-time-73b5d-default-rtdb.europe-west1.firebasedatabase.app/stops.json`,
-      data
+      `https://real-time-73b5d-default-rtdb.europe-west1.firebasedatabase.app/stops/${id}.json`,
+      stop
     );
   }
 
   removeBookmark(id: string): Observable<boolean> {
     return this.httpClient.delete<boolean>(
-      `https://real-time-73b5d-default-rtdb.europe-west1.firebasedatabase.app/stops.json`,
-      {
-        params: {
-          id: id,
-        },
-      }
+      `https://real-time-73b5d-default-rtdb.europe-west1.firebasedatabase.app/stops/${id}.json`
     );
   }
 }

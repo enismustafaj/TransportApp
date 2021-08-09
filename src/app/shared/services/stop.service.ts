@@ -25,9 +25,12 @@ export class StopService {
     );
   }
 
-  getDepartures(stopId: string): Observable<any> {
+  getDepartures(stopId: string, params: { [k: string]: any }): Observable<any> {
     return this.httpClient.get<any>(
-      `https://v5.vbb.transport.rest/stops/${stopId}/departures`
+      `https://v5.vbb.transport.rest/stops/${stopId}/departures`,
+      {
+        params: params,
+      }
     );
   }
 }

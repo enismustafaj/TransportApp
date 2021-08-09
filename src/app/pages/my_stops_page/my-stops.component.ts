@@ -12,7 +12,6 @@ export class MyStopsComponent implements OnInit, OnDestroy {
   constructor(private bookmarkService: BookmarkService) {}
   ngOnInit() {
     this.bookmarkService.getBookmarks().subscribe((bookmarks) => {
-      console.log(bookmarks);
       this.bookmarks = bookmarks;
     });
   }

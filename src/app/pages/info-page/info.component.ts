@@ -1,4 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
+import { FormControl, FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router, RouterState } from '@angular/router';
 import { Departure } from 'src/app/shared/models/departure.model';
 import { Stop } from 'src/app/shared/models/stop.model';
@@ -18,6 +19,11 @@ export class InfoComponent implements OnInit, OnDestroy {
   stop: Stop = {} as Stop;
   departures: Departure[] = [];
 
+  departureGroup = new FormGroup({
+    when: new FormControl(),
+    duration: new FormControl(),
+  });
+
   constructor(
     private stopService: StopService,
     private bookmarksService: BookmarkService,
@@ -34,6 +40,7 @@ export class InfoComponent implements OnInit, OnDestroy {
     this.stop = await this.stopService.getStop(this.stopId).toPromise();
 
     this.bookmarksService.getBookmark(this.stop.id).subscribe((bookmark) => {
+      console.log(bookmark);
       if (bookmark) {
         this.bookmarked = true;
         this.bookmarkButtonText = 'Remove from bookmarks';
@@ -45,9 +52,18 @@ export class InfoComponent implements OnInit, OnDestroy {
   }
 
   showDepartures() {
-    this.stopService.getDepartures(this.stop.id).subscribe((departures) => {
-      this.departures = departures;
-    });
+    let params: { [k: string]: any } = {};
+    if (this.departureGroup.value.when) {
+      params['when'] = this.departureGroup.value.when;
+    }
+    if (this.departureGroup.value.duration) {
+      params['duration'] = this.departureGroup.value.duration;
+    }
+    this.stopService
+      .getDepartures(this.stop.id, params)
+      .subscribe((departures) => {
+        this.departures = departures;
+      });
   }
 
   switchBookmark() {
