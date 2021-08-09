@@ -1,24 +1,36 @@
 <ng-container *ngIf="stop.name !== undefined">
   <div class="container mt-5">
     <div style="display: flex; justify-content: space-between">
-      <h2>{{ stop.name }}</h2>
-      <button class="btn btn-primary" (click)="addBookmark()">Bookmark</button>
+      <h1>{{ stop.name }}</h1>
+
+      <button
+        class="btn"
+        [ngClass]="{
+          'btn-primary': !bookmarked,
+          'btn-secondary': bookmarked
+        }"
+        (click)="switchBookmark()"
+      >
+        {{ bookmarkButtonText }}
+      </button>
     </div>
 
     <table class="table table-bordered w-75 mt-5">
       <thead>
-        <th scope="col" *ngFor="let prod of stop.products | keyvalue">
+        <th
+          class="text-center"
+          scope="col"
+          *ngFor="let prod of stop.products | keyvalue"
+        >
           {{ prod.key | titlecase }}
         </th>
       </thead>
       <tbody>
         <tr>
           <td *ngFor="let prod of stop.products | keyvalue">
-            <span *ngIf="prod.value; else no"
-              ><i class="fas fa-check"></i
-            ></span>
+            <span *ngIf="prod.value; else no"><mat-icon>done</mat-icon></span>
             <ng-template #no>
-              <span> <i class="fas fa-times"></i></span>
+              <span> <mat-icon>close</mat-icon></span>
             </ng-template>
           </td>
         </tr>
@@ -28,6 +40,8 @@
       Show Departures
     </button>
     <hr />
-    <div class="shadows rounded mt-5"></div>
+    <div class="shadow rounded mt-5" *ngFor="let dep of departures">
+      {{ dep.direction }}
+    </div>
   </div>
 </ng-container>

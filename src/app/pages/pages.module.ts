@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
+import { MatIconModule } from '@angular/material/icon';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { SharedModule } from '../shared/shared.module';
@@ -15,6 +16,7 @@ import { SearchComponent } from './search_page/search.component';
     FormsModule,
     ReactiveFormsModule,
     RouterModule,
+    MatIconModule,
   ],
   exports: [MyStopsComponent, SearchComponent, InfoComponent],
   providers: [],

@@ -9,16 +9,41 @@ import { Stop } from '../models/stop.model';
 export class BookmarkService {
   constructor(private httpClient: HttpClient) {}
 
-  getBookmarks(): Observable<Stop[]> {
-    return this.httpClient.get<Stop[]>(
-      'https://real-time-73b5d-default-rtdb.europe-west1.firebasedatabase.app/'
+  getBookmark(id: string) {
+    console.log(id);
+    return this.httpClient.get<Stop>(
+      `https://real-time-73b5d-default-rtdb.europe-west1.firebasedatabase.app/stops.json`,
+      {
+        params: {
+          id: id,
+        },
+      }
+    );
+  }
+  getBookmarks(): Observable<{ [k: string]: Stop }> {
+    return this.httpClient.get<{ [k: string]: Stop }>(
+      'https://real-time-73b5d-default-rtdb.europe-west1.firebasedatabase.app/stops.json'
     );
   }
 
   addBookmark(id: string, stop: Stop): Observable<boolean> {
-    return this.httpClient.post<boolean>(
-      `https://real-time-73b5d-default-rtdb.europe-west1.firebasedatabase.app/${id}.json`,
-      stop
+    const data = {
+      [id]: stop,
+    };
+    return this.httpClient.put<boolean>(
+      `https://real-time-73b5d-default-rtdb.europe-west1.firebasedatabase.app/stops.json`,
+      data
+    );
+  }
+
+  removeBookmark(id: string): Observable<boolean> {
+    return this.httpClient.delete<boolean>(
+      `https://real-time-73b5d-default-rtdb.europe-west1.firebasedatabase.app/stops.json`,
+      {
+        params: {
+          id: id,
+        },
+      }
     );
   }
 }
