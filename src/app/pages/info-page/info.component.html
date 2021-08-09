@@ -1,1 +1,33 @@
-<div></div>
+<ng-container *ngIf="stop.name !== undefined">
+  <div class="container mt-5">
+    <div style="display: flex; justify-content: space-between">
+      <h2>{{ stop.name }}</h2>
+      <button class="btn btn-primary" (click)="addBookmark()">Bookmark</button>
+    </div>
+
+    <table class="table table-bordered w-75 mt-5">
+      <thead>
+        <th scope="col" *ngFor="let prod of stop.products | keyvalue">
+          {{ prod.key | titlecase }}
+        </th>
+      </thead>
+      <tbody>
+        <tr>
+          <td *ngFor="let prod of stop.products | keyvalue">
+            <span *ngIf="prod.value; else no"
+              ><i class="fas fa-check"></i
+            ></span>
+            <ng-template #no>
+              <span> <i class="fas fa-times"></i></span>
+            </ng-template>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <button type="button" class="btn btn-primary" (click)="showDepartures()">
+      Show Departures
+    </button>
+    <hr />
+    <div class="shadows rounded mt-5"></div>
+  </div>
+</ng-container>
