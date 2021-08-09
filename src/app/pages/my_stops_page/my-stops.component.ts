@@ -1,4 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Subscription } from 'rxjs';
 import { Stop } from 'src/app/shared/models/stop.model';
 import { BookmarkService } from 'src/app/shared/services/bookmark.service';
 
@@ -9,11 +10,18 @@ import { BookmarkService } from 'src/app/shared/services/bookmark.service';
 })
 export class MyStopsComponent implements OnInit, OnDestroy {
   bookmarks: { [key: string]: Stop } = {};
+  myStopsSubscription: Subscription | undefined;
   constructor(private bookmarkService: BookmarkService) {}
   ngOnInit() {
-    this.bookmarkService.getBookmarks().subscribe((bookmarks) => {
-      this.bookmarks = bookmarks;
-    });
+    this.myStopsSubscription = this.bookmarkService
+      .getBookmarks()
+      .subscribe((bookmarks) => {
+        this.bookmarks = bookmarks;
+      });
   }
-  ngOnDestroy() {}
+  ngOnDestroy() {
+    if (this.myStopsSubscription) {
+      this.myStopsSubscription.unsubscribe();
+    }
+  }
 }

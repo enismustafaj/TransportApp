@@ -41,6 +41,7 @@
         <div class="form-group">
           <div class="row">
             <div class="col-md-3">
+              <label for="">Departure Time:</label>
               <input
                 type="datetime-local"
                 class="form-control"
@@ -48,6 +49,7 @@
               />
             </div>
             <div class="col-md-2">
+              <label for="">Duration(mins):</label>
               <input
                 type="number"
                 class="form-control"
@@ -55,6 +57,7 @@
               />
             </div>
             <div class="col-md-2">
+              <br />
               <button
                 type="button"
                 class="btn btn-primary"
@@ -73,7 +76,10 @@
       <div class="card">
         <div class="card-header">
           <strong>Direction:</strong>{{ " " + dep.direction }} |
-          <strong>Travel Nr.</strong>{{ dep.line.fahrtNr }}
+          <strong>Travel Nr.</strong>{{ dep.line.fahrtNr }} |
+          <span *ngIf="dep.line.operator !== undefined"
+            ><strong>Operator: </strong>{{ " " + dep.line.operator.name }}</span
+          >
         </div>
         <div class="card-body">
           <ul>
@@ -90,7 +96,14 @@
             <li>Transport: {{ " " + dep.line.product | titlecase }}</li>
           </ul>
           <hr />
-          <p class="text-warning">{{ dep.line.summary }}</p>
+          <ng-container *ngFor="let rem of dep.remarks">
+            <div *ngIf="rem.summary !== undefined && rem.type == 'warning'">
+              <strong>Warning: </strong>
+              <p class="text-warning">
+                {{ rem.summary }}
+              </p>
+            </div>
+          </ng-container>
         </div>
       </div>
     </div>

@@ -17,6 +17,7 @@ export class SearchComponent implements OnInit, OnDestroy {
 
   results: Stop[] = [];
   stopSubscription: Subscription | undefined;
+  noResult: boolean = false;
 
   ngOnInit() {}
 
@@ -24,6 +25,9 @@ export class SearchComponent implements OnInit, OnDestroy {
     this.stopSubscription = this.stopService
       .getStops(this.form.value.search)
       .subscribe((res) => {
+        if (res.length === 0) {
+          this.noResult = true;
+        }
         this.results = res;
       });
   }

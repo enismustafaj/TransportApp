@@ -10,7 +10,6 @@ export class BookmarkService {
   constructor(private httpClient: HttpClient) {}
 
   getBookmark(id: string) {
-    console.log(id);
     return this.httpClient.get<Stop>(
       `https://real-time-73b5d-default-rtdb.europe-west1.firebasedatabase.app/stops/${id}.json`
     );

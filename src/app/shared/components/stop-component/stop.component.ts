@@ -13,7 +13,7 @@ export class StopComponent {
   constructor(private router: Router) {}
 
   showInfo(id: string) {
-    console.log(id);
-    this.router.navigate(['/info', id], { state: { id: id } });
+    window.localStorage.setItem('stopId', id);
+    this.router.navigate(['/info', id]);
   }
 }

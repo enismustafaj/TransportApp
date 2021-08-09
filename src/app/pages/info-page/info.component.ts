@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { ActivatedRoute, Router, RouterState } from '@angular/router';
+import { Subscription } from 'rxjs';
 import { Departure } from 'src/app/shared/models/departure.model';
 import { Stop } from 'src/app/shared/models/stop.model';
 import { BookmarkService } from 'src/app/shared/services/bookmark.service';
@@ -13,11 +13,14 @@ import { StopService } from 'src/app/shared/services/stop.service';
 })
 export class InfoComponent implements OnInit, OnDestroy {
   stopId: string = '';
-  routerState: any;
   bookmarked: boolean = false;
   bookmarkButtonText: string = '';
   stop: Stop = {} as Stop;
   departures: Departure[] = [];
+
+  bookmarkSubscription: Subscription | undefined;
+  departureSubscription: Subscription | undefined;
+  switchBookmarkSubscription: Subscription | undefined;
 
   departureGroup = new FormGroup({
     when: new FormControl(),
@@ -26,29 +29,25 @@ export class InfoComponent implements OnInit, OnDestroy {
 
   constructor(
     private stopService: StopService,
-    private bookmarksService: BookmarkService,
-    private router: Router
+    private bookmarksService: BookmarkService
   ) {
-    if (this.router.getCurrentNavigation()?.extras.state !== undefined) {
-      this.routerState = this.router.getCurrentNavigation()?.extras.state;
-      if (this.routerState) {
-        this.stopId = this.routerState.id;
-      }
-    }
+    const id = window.localStorage.getItem('stopId');
+    this.stopId = id ? id : '';
   }
   async ngOnInit() {
     this.stop = await this.stopService.getStop(this.stopId).toPromise();
 
-    this.bookmarksService.getBookmark(this.stop.id).subscribe((bookmark) => {
-      console.log(bookmark);
-      if (bookmark) {
-        this.bookmarked = true;
-        this.bookmarkButtonText = 'Remove from bookmarks';
-      } else {
-        this.bookmarked = false;
-        this.bookmarkButtonText = 'Add to bookmarks';
-      }
-    });
+    this.bookmarkSubscription = this.bookmarksService
+      .getBookmark(this.stop.id)
+      .subscribe((bookmark) => {
+        if (bookmark) {
+          this.bookmarked = true;
+          this.bookmarkButtonText = 'Remove from bookmarks';
+        } else {
+          this.bookmarked = false;
+          this.bookmarkButtonText = 'Add to bookmarks';
+        }
+      });
   }
 
   showDepartures() {
@@ -59,7 +58,7 @@ export class InfoComponent implements OnInit, OnDestroy {
     if (this.departureGroup.value.duration) {
       params['duration'] = this.departureGroup.value.duration;
     }
-    this.stopService
+    this.departureSubscription = this.stopService
       .getDepartures(this.stop.id, params)
       .subscribe((departures) => {
         this.departures = departures;
@@ -68,19 +67,31 @@ export class InfoComponent implements OnInit, OnDestroy {
 
   switchBookmark() {
     if (!this.bookmarked) {
-      this.bookmarksService
+      this.switchBookmarkSubscription = this.bookmarksService
         .addBookmark(this.stop.id, this.stop)
         .subscribe((res) => {
           this.bookmarked = true;
           this.bookmarkButtonText = 'Remove from bookmarks';
         });
     } else {
-      this.bookmarksService.removeBookmark(this.stop.id).subscribe((res) => {
-        this.bookmarked = false;
-        this.bookmarkButtonText = 'Add to bookmarks';
-      });
+      this.switchBookmarkSubscription = this.bookmarksService
+        .removeBookmark(this.stop.id)
+        .subscribe((res) => {
+          this.bookmarked = false;
+          this.bookmarkButtonText = 'Add to bookmarks';
+        });
     }
   }
 
-  ngOnDestroy() {}
+  ngOnDestroy() {
+    if (this.bookmarkSubscription) {
+      this.bookmarkSubscription.unsubscribe();
+    }
+    if (this.departureSubscription) {
+      this.departureSubscription.unsubscribe();
+    }
+    if (this.switchBookmarkSubscription) {
+      this.switchBookmarkSubscription.unsubscribe();
+    }
+  }
 }
